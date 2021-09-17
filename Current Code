@@ -15,6 +15,7 @@
 
             setInterval(mainloop, 1000 / 60);
         }
+
         //player variables
         var playerYpos = 200;
         const playerXpos = 50;
@@ -24,25 +25,25 @@
         const UP_KEY = 38;
 
         var enemies = [];
-        var totalEnemies = 1;
+        var totalEnemies = 5;
         var startingPos = true;
 
-        var cave = new Image();
-        cave.src = 'images/cave.png';
-
-
+        const ENEMY_WIDTH = 20;
+        const ENEMY_HEIGHT = 100;
+        var enemyYpos = 300;
+        var enemyXpos = 400;
+        var enemyXspeed = -5;
 
         function mainloop() {
             colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
-
             colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red'); // player
 
             playerMove();
             gravity();
+
             enemyMove();
             drawEnemy();
-            makeEnemy();
-            drawImg();
+            //drawImg();
 
             if (startingPos) {
                 for (i = 0; i < totalEnemies; i++) {
@@ -56,54 +57,6 @@
         function playerMove() {
             if (upKeypress)
                 playerYpos -= playerYup;
-
-        }
-
-
-        //enemy movement
-        function makeEnemy() {
-            var enemyYpos = 0;
-            var enemyXpos = 400;
-            const ENEMY_SIZE = 20;
-            var enemyXspeed = -5;
-
-            var enemy = {
-                enemyYpos: enemyYpos,
-                ENEMY_SIZE: ENEMY_SIZE,
-                enemyXpos: enemyXpos,
-                enemyXspeed: enemyXspeed,
-            }
-
-            enemies.push(enemy);
-        }
-
-        function drawEnemy() {
-            enemies.forEach(function(e, i, array) {
-                drawImg(e.cave, e.enemyXpos, e.enemyYpos, e.ENEMY_SIZE, e.ENEMY_SIZE, 'brown'); // enemy
-            });
-        }
-
-        function enemyMove() {
-            enemies.forEach(function(e) {
-
-                e.enemyXpos += e.enemyXspeed;
-
-                if (e.enemyXpos < 0) {
-                    e.enemyXpos = 600;
-                    e.enemyYpos = Math.floor(Math.random() * (550 - 50) + 50);
-                }
-            });
-
-        }
-
-        //playergravity variables
-        var direction = 1;
-        var velocity = 2;
-        var fallingSpeed = 2;
-
-        //playergravity
-        function gravity() {
-            playerYpos = playerYpos + (direction * velocity);
         }
 
         //player key movements
@@ -121,15 +74,67 @@
 
         }
 
+        function enemyMove() {
+            enemies.forEach(function(enemy) {
 
-        function colorRect(x, y, w, h, c) {
-            canvasContext.fillStyle = c;
+                enemy.enemyXpos += enemy.enemyXspeed;
+
+                if (enemy.enemyXpos < -5) {
+                    enemy.enemyXpos = 800;
+
+                    var enemyPos = Math.floor(Math.random() * 3) + 1;
+                    enemy.enemyYpos = Math.floor(Math.random() * (600 - 100) - 100);
+                    enemy.enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
+                }
+            });
+        }
+
+        function makeEnemy() {
+            var enemyPos = Math.floor(Math.random() * 3) + 1;
+            const ENEMY_WIDTH = 20;
+            const ENEMY_HEIGHT = 250;
+            var enemyYpos = enemyPos * (canvas.height / 3);
+            var enemyXpos = 400;
+            var enemyXspeed = -5;
+
+            var enemy = {
+                ENEMY_WIDTH: ENEMY_WIDTH,
+                ENEMY_HEIGHT: ENEMY_HEIGHT,
+                enemyYpos: enemyYpos,
+                enemyXpos: enemyXpos,
+                enemyXspeed: enemyXspeed,
+            }
+
+            enemies.push(enemy);
+        }
+
+        function drawEnemy() {
+            enemies.forEach(function(enemy, i) {
+                colorRect(enemy.enemyXpos, enemy.enemyYpos, enemy.ENEMY_WIDTH, enemy.ENEMY_HEIGHT, 'brown'); // enemy
+            });
+        }
+
+
+        //playergravity variables
+        var direction = 1;
+        var velocity = 2;
+        var fallingSpeed = 2;
+
+        //playergravity
+        function gravity() {
+            playerYpos = playerYpos + (direction * velocity);
+        }
+
+
+
+        function colorRect(x, y, w, h, color) {
+            canvasContext.fillStyle = color;
             canvasContext.fillRect(x, y, w, h);
         }
 
-        function drawImg(src, x, y, w, h) {
-            canvasContext.drawImage(src, x, y, w, h);
-        }
+        // function drawImg(src, x, y, w, h) {
+        //     canvasContext.drawImage(src, x, y, w, h);
+        //}
 
     </script>
 </body>
