@@ -25,9 +25,10 @@
         const UP_KEY = 38;
 
         var enemies = [];
-        var totalEnemies = 5;
+        var totalEnemies = 3;
         var startingPos = true;
 
+        //enemy obstacles variables
         const ENEMY_WIDTH = 20;
         const ENEMY_HEIGHT = 100;
         var enemyYpos = 300;
@@ -43,6 +44,7 @@
 
             enemyMove();
             drawEnemy();
+            hit();
             //drawImg();
 
             if (startingPos) {
@@ -57,7 +59,7 @@
         function playerMove() {
             if (upKeypress)
                 playerYpos -= playerYup;
-        }
+        } //end of func
 
         //player key movements
         function keyPressed(evt) {
@@ -72,8 +74,9 @@
                 upKeypress = false;
             }
 
-        }
+        } //end of func
 
+        //enemy movement func
         function enemyMove() {
             enemies.forEach(function(enemy) {
 
@@ -86,6 +89,20 @@
                     enemy.enemyYpos = Math.floor(Math.random() * (600 - 100) - 100);
                     enemy.enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
                 }
+
+                // if (enemy.enemyXpos + enemy.ENEMY_WIDTH > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE && //enemy.enemyYpos + enemy.ENEMY_WIDTH > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE) {
+                //console.log('stinky')
+                // }
+            });
+        } //end of func
+
+        function hit() {
+            enemies.forEach(function(enemy, i, array) {
+                if (enemy.enemyXpos + enemy.ENEMY_SIZE > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE && enemy.enemyYpos + enemy.ENEMY_SIZE > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE) {
+
+                    location.reload();
+
+                };
             });
         }
 
