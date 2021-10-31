@@ -1,0 +1,3 @@
+       if (enemy.enemyXpos + enemy.ENEMY_WIDTH > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE && enemy.enemyYpos + enemy.ENEMY_WIDTH > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE) {
+                    console.log('stinky')
+                }
