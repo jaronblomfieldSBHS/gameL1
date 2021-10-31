@@ -16,6 +16,27 @@
             setInterval(mainloop, 1000 / 60);
         }
 
+        var userName = '';
+        while (userName == '' || userName == null) {
+            userName = prompt('whats ur name?')
+        }
+
+        var speed = 0;
+
+        var difficulty = '';
+        var pass = false;
+
+        while (pass == false) {
+            difficulty = prompt('What difficulty u want?', 'Easy');
+            if (difficulty != null) {
+                pass = true;
+            }
+        }
+
+        if (difficulty == 'Easy') {
+            speed = 4;
+        } // add other difficultys
+
         //player variables
         var playerYpos = 200;
         const playerXpos = 50;
@@ -89,10 +110,6 @@
                     enemy.enemyYpos = Math.floor(Math.random() * (600 - 100) - 100);
                     enemy.enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
                 }
-
-                // if (enemy.enemyXpos + enemy.ENEMY_WIDTH > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE && //enemy.enemyYpos + enemy.ENEMY_WIDTH > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE) {
-                //console.log('stinky')
-                // }
             });
         } //end of func
 
