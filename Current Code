@@ -29,57 +29,60 @@
                 pass = true;
             }
         }
-        
-        var enemyXspeed = Math.floor(Math.random());
+
+        var playerYup = 0;
 
         if (difficulty == 'Easy') {
-            var enemyXspeed = Math.floor(Math.random() * (4 - 2) - 2);
+            var playerYup = 9;
         }
         if (difficulty == 'Normal') {
-            var enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
+            var playerYup = 6;
         }
         if (difficulty == 'Impossible') {
-            var enemyXspeed = Math.floor(Math.random() * (12 - 8) - 8);
+            var playerYup = 3;
+        }
+
+        function mainloop() {
+            if (gameRun) {
+                colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
+                colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red'); // player
+
+                playerMove();
+                gravity();
+
+                enemyMove();
+                drawEnemy();
+                hit();
+                //drawImg();
+
+                if (startingPos) {
+                    for (i = 0; i < totalEnemies; i++) {
+                        makeEnemy();
+                    }
+                    startingPos = false;
+                }
+
+            }
         }
 
         //player variables
         var playerYpos = 200;
         const playerXpos = 50;
         const PLAYER_SIZE = 20;
-        var playerYup = 5;
         var upKeypress = false;
         const UP_KEY = 38;
 
         var enemies = [];
-        var totalEnemies = 6;
+        var totalEnemies = 3;
         var startingPos = true;
 
         //enemy obstacles variables
         const ENEMY_WIDTH = 20;
-        const ENEMY_HEIGHT = 100;
+        const ENEMY_HEIGHT = 250;
         var enemyYpos = 300;
         var enemyXpos = 400;
         var enemyXspeed = -5;
 
-        function mainloop() {
-            colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
-            colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red'); // player
-
-            playerMove();
-            gravity();
-
-            enemyMove();
-            drawEnemy();
-            hit();
-            //drawImg();
-
-            if (startingPos) {
-                for (i = 0; i < totalEnemies; i++) {
-                    makeEnemy();
-                }
-                startingPos = false;
-            }
-        }
 
         //player movement
         function playerMove() {
@@ -102,20 +105,6 @@
 
         } //end of func
 
-        //enemy movement func
-        function enemyMove() { //function for enemy movement
-            enemies.forEach(function(enemy) {
-
-                enemy.enemyXpos += enemy.enemyXspeed;
-
-                if (enemy.enemyXpos < -5) {
-                    enemy.enemyXpos = 800;
-
-                    var enemyPos = Math.floor(Math.random() * 3) + 1;
-                    enemy.enemyYpos = Math.floor(Math.random() * (600 - 100) - 100);
-                }
-            });
-        } //end of func
 
         function hit() { //function for detecting when player touches something
             enemies.forEach(function(enemy, i, array) {
@@ -139,6 +128,21 @@
                 colorRect(0, 0, canvas.width, canvas.height, 'red')
                 playerYpos = 200;
             }
+        } //end of func
+
+        function enemyMove() { //function for enemy movement
+            enemies.forEach(function(enemy) {
+
+                enemy.enemyXpos += enemy.enemyXspeed;
+
+                if (enemy.enemyXpos < -5) {
+                    enemy.enemyXpos = 800;
+
+                    var enemyPos = Math.floor(Math.random() * 3) + 1;
+                    enemy.enemyYpos = Math.floor(Math.random() * (600 - 100) - 100);
+                    enemy.enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
+                }
+            });
         } //end of func
 
         function makeEnemy() {
