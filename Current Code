@@ -21,21 +21,26 @@
             userName = prompt('whats ur name?')
         }
 
-        var speed = 0;
-
         var difficulty = '';
         var pass = false;
-
         while (pass == false) {
-            difficulty = prompt('What difficulty u want?', 'Easy');
-            if (difficulty != null) {
+            difficulty = prompt('What difficulty u want?', 'Easy, Normal, Impossible');
+            if (difficulty == 'Easy' || difficulty == 'Normal' || difficulty == 'Impossible') {
                 pass = true;
             }
         }
+        
+        var enemyXspeed = Math.floor(Math.random());
 
         if (difficulty == 'Easy') {
-            speed = 4;
-        } // add other difficultys
+            var enemyXspeed = Math.floor(Math.random() * (4 - 2) - 2);
+        }
+        if (difficulty == 'Normal') {
+            var enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
+        }
+        if (difficulty == 'Impossible') {
+            var enemyXspeed = Math.floor(Math.random() * (12 - 8) - 8);
+        }
 
         //player variables
         var playerYpos = 200;
@@ -46,7 +51,7 @@
         const UP_KEY = 38;
 
         var enemies = [];
-        var totalEnemies = 40;
+        var totalEnemies = 6;
         var startingPos = true;
 
         //enemy obstacles variables
@@ -88,7 +93,7 @@
                 upKeypress = true;
             }
 
-        }
+        } //end of func
 
         function keyReleased(evt) {
             if (evt.keyCode == UP_KEY) {
@@ -98,7 +103,7 @@
         } //end of func
 
         //enemy movement func
-        function enemyMove() {
+        function enemyMove() { //function for enemy movement
             enemies.forEach(function(enemy) {
 
                 enemy.enemyXpos += enemy.enemyXspeed;
@@ -108,23 +113,33 @@
 
                     var enemyPos = Math.floor(Math.random() * 3) + 1;
                     enemy.enemyYpos = Math.floor(Math.random() * (600 - 100) - 100);
-                    enemy.enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
                 }
             });
         } //end of func
 
-        function hit() {
+        function hit() { //function for detecting when player touches something
             enemies.forEach(function(enemy, i, array) {
                 if (enemy.enemyXpos + enemy.ENEMY_SIZE > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE && enemy.enemyYpos + enemy.ENEMY_SIZE > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE) {
 
                     location.reload();
 
                 };
-                if (enemy.enemyYpos + enemy.ENEMY_HEIGHT > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE && enemy.enemyXpos + enemy.ENEMY_WIDTH > PLAYER_SIZE && enemy.enemyXpos < playerXpos + PLAYER_SIZE) {
-                    console.log('stinky')
+                if (enemy.enemyYpos + enemy.ENEMY_HEIGHT > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE && enemy.enemyXpos + enemy.ENEMY_WIDTH > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE) {
+                    colorRect(0, 0, canvas.width, canvas.height, 'red');
+                    playerYpos = 200;
                 }
             });
-        }
+
+            if (playerYpos > canvas.height) {
+                colorRect(0, 0, canvas.width, canvas.height, 'red')
+                playerYpos = 200;
+            }
+
+            if (playerYpos < 0) {
+                colorRect(0, 0, canvas.width, canvas.height, 'red')
+                playerYpos = 200;
+            }
+        } //end of func
 
         function makeEnemy() {
             var enemyPos = Math.floor(Math.random() * 3) + 1;
@@ -143,13 +158,13 @@
             }
 
             enemies.push(enemy);
-        }
+        } //end of func
 
         function drawEnemy() {
             enemies.forEach(function(enemy, i) {
                 colorRect(enemy.enemyXpos, enemy.enemyYpos, enemy.ENEMY_WIDTH, enemy.ENEMY_HEIGHT, 'brown'); // enemy
             });
-        }
+        } //end of func
 
 
         //playergravity variables
@@ -157,17 +172,18 @@
         var velocity = 2;
         var fallingSpeed = 2;
 
+
         //playergravity
         function gravity() {
             playerYpos = playerYpos + (direction * velocity);
-        }
+        } //end of func
 
 
 
         function colorRect(x, y, w, h, color) {
             canvasContext.fillStyle = color;
             canvasContext.fillRect(x, y, w, h);
-        }
+        } //end of func
 
         // function drawImg(src, x, y, w, h) {
         //     canvasContext.drawImage(src, x, y, w, h);
