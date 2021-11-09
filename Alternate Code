@@ -1,0 +1,203 @@
+<!doctype html>
+
+<body>
+    <canvas id="gameCanvas" width="800" height="600">
+    </canvas>
+    <script>
+        var canvas, canvasContext;
+
+        window.onload = function() {
+            canvas = document.getElementById('gameCanvas');
+            canvasContext = canvas.getContext('2d');
+
+            document.addEventListener("keydown", keyPressed);
+            document.addEventListener("keyup", keyReleased);
+
+            setInterval(mainloop, 1000 / 60);
+        }
+
+        var userName = '';
+        while (userName == '' || userName == null) {
+            userName = prompt('Enter Username')
+        }
+
+        var difficulty = '';
+        var pass = false;
+        while (pass == false) {
+            difficulty = prompt('Choose a difficulty', 'Easy, Normal, Impossible');
+            if (difficulty == 'Easy' || difficulty == 'Normal' || difficulty == 'Impossible') {
+                pass = true;
+            }
+        }
+
+
+        var playerYup = 0;
+
+        if (difficulty == 'Easy') {
+            var playerYup = 9;
+        }
+        if (difficulty == 'Normal') {
+            var playerYup = 6;
+        }
+        if (difficulty == 'Impossible') {
+            var playerYup = 3;
+        }
+
+        function mainloop() {
+            if (gameRun == true) {
+
+                colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
+                colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'red'); // player
+
+                playerMove();
+                gravity();
+
+                enemyMove();
+                drawEnemy();
+                hit();
+                //drawImg();
+
+                if (startingPos) {
+                    for (i = 0; i < totalEnemies; i++) {
+                        makeEnemy();
+                    }
+                    startingPos = false;
+                }
+            } else {
+                colorRect(0, 0, canvas.width, canvas.height, 'red');
+            }
+
+
+        }
+
+        //player variables
+        var playerYpos = 200;
+        const playerXpos = 50;
+        const PLAYER_SIZE = 20;
+        var upKeypress = false;
+        const UP_KEY = 38;
+
+        var enemies = [];
+        var totalEnemies = 8;
+        var startingPos = true;
+
+        //enemy obstacles variables
+        const ENEMY_WIDTH = 20;
+        const ENEMY_HEIGHT = 250;
+        var enemyYpos = 300;
+        var enemyXpos = 400;
+        var enemyXspeed = -5;
+
+
+        //player movement
+        function playerMove() {
+            if (upKeypress)
+                playerYpos -= playerYup;
+        } //end of func
+
+        //player key movements
+        function keyPressed(evt) {
+            if (evt.keyCode == UP_KEY) {
+                upKeypress = true;
+            }
+
+        } //end of func
+
+        function keyReleased(evt) {
+            if (evt.keyCode == UP_KEY) {
+                upKeypress = false;
+            }
+
+        } //end of func
+
+
+        function hit() { //function for detecting when player touches something
+            enemies.forEach(function(enemy, i, array) {
+                if (enemy.enemyXpos + enemy.ENEMY_SIZE > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE && enemy.enemyYpos + enemy.ENEMY_SIZE > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE) {
+
+                    location.reload();
+
+                };
+                if (enemy.enemyYpos + enemy.ENEMY_HEIGHT > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE && enemy.enemyXpos + enemy.ENEMY_WIDTH > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE) {
+                    colorRect(0, 0, canvas.width, canvas.height, 'red');
+                    playerYpos = 200;
+                }
+
+                if (playerYpos > canvas.height) {
+                    colorRect(0, 0, canvas.width, canvas.height, 'red')
+                    playerYpos = 200;
+                }
+
+                if (playerYpos < 0) {
+                    colorRect(0, 0, canvas.width, canvas.height, 'red')
+                    playerYpos = 200;
+                }
+                gameRun = false;
+            });
+        } //end of func
+
+        function enemyMove() { //function for enemy movement
+            enemies.forEach(function(enemy) {
+
+                enemy.enemyXpos += enemy.enemyXspeed;
+
+                if (enemy.enemyXpos < -5) {
+                    enemy.enemyXpos = 800;
+
+                    var enemyPos = Math.floor(Math.random() * 3) + 1;
+                    enemy.enemyYpos = Math.floor(Math.random() * (600 - 100) - 100);
+                    enemy.enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
+                }
+            });
+        } //end of func
+
+        function makeEnemy() {
+            var enemyPos = Math.floor(Math.random() * 3) + 1;
+            const ENEMY_WIDTH = 20;
+            const ENEMY_HEIGHT = 250;
+            var enemyYpos = enemyPos * (canvas.height / 3);
+            var enemyXpos = 400;
+            var enemyXspeed = -5;
+
+            var enemy = {
+                ENEMY_WIDTH: ENEMY_WIDTH,
+                ENEMY_HEIGHT: ENEMY_HEIGHT,
+                enemyYpos: enemyYpos,
+                enemyXpos: enemyXpos,
+                enemyXspeed: enemyXspeed,
+            }
+
+            enemies.push(enemy);
+        } //end of func
+
+        function drawEnemy() {
+            enemies.forEach(function(enemy, i) {
+                colorRect(enemy.enemyXpos, enemy.enemyYpos, enemy.ENEMY_WIDTH, enemy.ENEMY_HEIGHT, 'brown'); // enemy
+            });
+        } //end of func
+
+
+        //playergravity variables
+        var direction = 1;
+        var velocity = 2;
+        var fallingSpeed = 2;
+
+
+        //playergravity
+        function gravity() {
+            playerYpos = playerYpos + (direction * velocity);
+        } //end of func
+
+
+
+        function colorRect(x, y, w, h, color) {
+            canvasContext.fillStyle = color;
+            canvasContext.fillRect(x, y, w, h);
+        } //end of func
+
+        // function drawImg(src, x, y, w, h) {
+        //     canvasContext.drawImage(src, x, y, w, h);
+        //}
+
+    </script>
+</body>
