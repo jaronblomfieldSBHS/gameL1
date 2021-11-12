@@ -1,8 +1,14 @@
 <!doctype html>
 
+<head>
+    <title>Sussy Block Dodge</title>
+</head>
+
 <body>
     <canvas id="gameCanvas" width="800" height="600">
     </canvas>
+    <h1>Controls: Up Arrow to Jump.
+        Last as long as possible!</h1>
     <script>
         var canvas, canvasContext;
 
@@ -17,6 +23,7 @@
         }
 
         var userName = '';
+
         while (userName == '' || userName == null) {
             userName = prompt('Enter Username')
         }
@@ -24,16 +31,16 @@
         var difficulty = '';
         var pass = false;
         while (pass == false) {
-            difficulty = prompt('Choose a difficulty', 'Easy, Normal, Impossible');
+            difficulty = prompt('Choose a difficulty', 'Easy, Normal, Impossible'); //prompt for player to choose game difficulty
             if (difficulty == 'Easy' || difficulty == 'Normal' || difficulty == 'Impossible') {
                 pass = true;
             }
         }
 
 
-        var playerYup = 0;
+        var playerYup = 0; //player variable for moving up
 
-        if (difficulty == 'Easy') {
+        if (difficulty == 'Easy') { //difficultys which change player vertical speed
             var playerYup = 9;
         }
         if (difficulty == 'Normal') {
@@ -45,11 +52,15 @@
 
         var gameRun = true;
 
+        var startingPos = true;
+
         function mainloop() {
             if (gameRun == true) {
 
                 colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
                 colorRect(playerXpos, playerYpos, PLAYER_SIZE, PLAYER_SIZE, 'green'); // player
+
+                drawText('Score: ' + score, 50, 50, '20px Arial', 'white'); //score that stays on screen during play
 
                 playerMove();
                 gravity();
@@ -67,10 +78,10 @@
                 }
 
             } else {
-                colorRect(0, 0, canvas.width, canvas.height, 'red');
-                playerYpos = canvas.height / 2;
+                colorRect(0, 0, canvas.width, canvas.height, 'red'); //death screen
+                drawText(userName + ',  you had a score of: ' + score, canvas.width / 2, canvas.height / 2, '30px Arial', 'white'); //displays players score when they die
             }
-        }
+        } //end of func
 
         //player variables
         var playerYpos = 200;
@@ -79,9 +90,6 @@
         var upKeypress = false;
         const UP_KEY = 38;
 
-        var enemies = [];
-        var totalEnemies = 8;
-        var startingPos = true;
 
         //enemy obstacles variables
         const ENEMY_WIDTH = 20;
@@ -90,6 +98,8 @@
         var enemyXpos = 400;
         var enemyXspeed = -5;
 
+        var enemies = [];
+        var totalEnemies = 8;
 
         //player movement
         function playerMove() {
@@ -122,18 +132,23 @@
 
                 if (enemy.enemyYpos + enemy.ENEMY_HEIGHT > playerYpos && enemy.enemyYpos < playerYpos + PLAYER_SIZE && enemy.enemyXpos + enemy.ENEMY_WIDTH > playerXpos && enemy.enemyXpos < playerXpos + PLAYER_SIZE) {
                     gameRun = false;
+                    drawText(userName + ',  you had a score of: ' + score, canvas.width / 2, canvas.height / 2, '30px Arial', 'white');
                 }
 
                 if (playerYpos > canvas.height) {
                     gameRun = false;
+                    drawText(userName + ',  you had a score of: ' + score, canvas.width / 2, canvas.height / 2, '30px Arial', 'white');
                 }
 
                 if (playerYpos < 0) {
                     gameRun = false;
+                    drawText(userName + ',  you had a score of: ' + score, canvas.width / 2, canvas.height / 2, '30px Arial', 'white');
                 }
 
             });
         } //end of func
+
+        var score = 0;
 
         function enemyMove() { //function for enemy movement
             enemies.forEach(function(enemy) {
@@ -144,8 +159,13 @@
                     enemy.enemyXpos = 800;
 
                     var enemyPos = Math.floor(Math.random() * 3) + 1;
-                    enemy.enemyYpos = Math.floor(Math.random() * (600 - 100) - 100);
+                    // enemy.enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
+                }
+                if (enemy.enemyXpos < 0) {
+                    enemy.enemyXpos = canvas.width;
                     enemy.enemyXspeed = Math.floor(Math.random() * (8 - 4) - 4);
+                    enemy.enemyYpos = Math.floor(Math.random() * (600 - 100) - 100);
+                    score++; //adds to the players score
                 }
             });
         } //end of func
@@ -153,7 +173,7 @@
         function makeEnemy() {
             var enemyPos = Math.floor(Math.random() * 3) + 1;
             const ENEMY_WIDTH = 20;
-            const ENEMY_HEIGHT = 250;
+            const ENEMY_HEIGHT = 200;
             var enemyYpos = enemyPos * (canvas.height / 3);
             var enemyXpos = 400;
             var enemyXspeed = -5;
@@ -188,6 +208,11 @@
         } //end of func
 
 
+        function drawText(msg, x, y, f, c) { //function for use of text
+            canvasContext.fillStyle = c;
+            canvasContext.font = f;
+            canvasContext.fillText(msg, x, y);
+        } //end of func
 
         function colorRect(x, y, w, h, color) {
             canvasContext.fillStyle = color;
